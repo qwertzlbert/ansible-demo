@@ -68,9 +68,9 @@ else
 fi
 
 # cleanup 
-#if [ -e hosts.bak ]; then
-#	mv hosts.bak hosts
-#fi
-#cd test/
-#sudo docker-compose down
+if [ -e hosts.bak ]; then
+	mv hosts.bak hosts
+fi
+cd test/
+sudo docker-compose down
 exit 0

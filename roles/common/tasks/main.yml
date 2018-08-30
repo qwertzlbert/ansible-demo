@@ -6,6 +6,6 @@
     - motd_config
 
 - name: create systeminfo
-  template: src=info.j2 dest=/etc/sysinfo
+  template: src=info.j2 dest=/tmp/sysinfo
   tags: 
     - create_sysinfo

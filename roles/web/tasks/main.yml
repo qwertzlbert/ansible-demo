@@ -7,7 +7,7 @@
     - install_apache
   
 - name: configure apache
-  template: src=apache.j2 dest=/etc/motd
+  template: src=apache.j2 dest=/etc/apache2/conf-enabled/demo.conf
   tags:
     - apache_cfg
 
