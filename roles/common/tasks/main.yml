@@ -1,0 +1,11 @@
+# playbook for all systems
+
+- name: Create hostfile
+  template: src=motd.j2 dest=/etc/motd
+  tags:
+    - motd_config
+
+- name: create systeminfo
+  template: src=info.j2 dest=/etc/sysinfo
+  tags: 
+    - create_sysinfo

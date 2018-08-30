@@ -1,0 +1,10 @@
+- name: gather facts
+  hosts: all
+
+- hosts: all
+  roles:
+  - role: common
+  
+- hosts: web
+  roles:
+  - role: web

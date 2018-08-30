@@ -1,0 +1,1 @@
+iface: "{{ (ansible_default_ipv4|default('eth0')).interface | default('eth0') }}"
