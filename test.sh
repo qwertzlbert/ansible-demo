@@ -1,7 +1,6 @@
 #!/bin/bash
 
 DEPENDENCIES="'docker' 'docker-compose' 'ansible' 'jq'"
-CONTAINER_COUNT=5
 CONF=test.cfg
 
 # change working directory to make relative paths working correctly
@@ -107,9 +106,9 @@ else
 fi
 
 # cleanup 
-#if [ -e hosts.bak ]; then
-#	mv hosts.bak hosts
-#fi
+if [ -e hosts.bak ]; then
+	mv hosts.bak hosts
+fi
 cd test/
 sudo docker-compose down
 exit 0

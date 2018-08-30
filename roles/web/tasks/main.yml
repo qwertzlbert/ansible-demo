@@ -1,10 +1,13 @@
 # playbook for all systems
 
-- name: install apache
+- name: install packages
   apt: 
-    name: apache2
-  tags:
-    - install_apache
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - git
+    - apache2
+    - net-tools
   
 - name: configure apache
   template: src=apache.j2 dest=/etc/apache2/conf-enabled/demo.conf

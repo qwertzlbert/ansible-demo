@@ -1,11 +1,15 @@
 # playbook for all systems
 
-- name: Create hostfile
+- name: Create MOTD
   template: src=motd.j2 dest=/etc/motd
   tags:
     - motd_config
 
 - name: create systeminfo
-  template: src=info.j2 dest=/tmp/sysinfo
+  template: src=info.j2 dest=/tmp/sysinfo_{{ inventory_hostname }}.txt
   tags: 
     - create_sysinfo
+
+- name: get sysinfo
+  fetch: src=/tmp/sysinfo_{{ inventory_hostname }}.txt dest=./sysinfo/
+

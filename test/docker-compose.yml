@@ -6,4 +6,10 @@ services:
       context: ./ubuntu
     command: /usr/sbin/sshd -D
     deploy:
+      replicas: 1
+  db:
+    build:
+      context: ./ubuntu
+    command: /usr/sbin/sshd -D
+    deploy:
       replicas: 5

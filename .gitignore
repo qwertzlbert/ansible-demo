@@ -2,3 +2,4 @@
 *.bak
 docker-compose.yml
 /venv
+/sysinfo
