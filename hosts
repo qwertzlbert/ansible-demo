@@ -1,7 +1,9 @@
 
 [web]
-test_172.22.0.6 ansible_host=172.22.0.6 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
-test_172.22.0.2 ansible_host=172.22.0.2 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
-test_172.22.0.4 ansible_host=172.22.0.4 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
-test_172.22.0.5 ansible_host=172.22.0.5 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
-test_172.22.0.3 ansible_host=172.22.0.3 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+test_web_2 ansible_host=172.21.0.6 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+test_web_4 ansible_host=172.21.0.5 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+test_web_5 ansible_host=172.21.0.4 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+test_web_1 ansible_host=172.21.0.3 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+test_web_3 ansible_host=172.21.0.2 ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+
+[db]

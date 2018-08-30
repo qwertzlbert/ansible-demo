@@ -1,7 +1,9 @@
 version: '3'
 
 services:
-  demo:
-    build: .
+  web:
+    build:
+      context: ./ubuntu
     command: /usr/sbin/sshd -D
-    
+    deploy:
+      replicas: 5

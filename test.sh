@@ -1,9 +1,8 @@
 #!/bin/bash
 
-
-DEPENDENCIES="'docker' 'docker-compose' 'ansible' 'sshpass'"
-
+DEPENDENCIES="'docker' 'docker-compose' 'ansible' 'jq'"
 CONTAINER_COUNT=5
+CONF=test.cfg
 
 # change working directory to make relative paths working correctly
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -19,44 +18,84 @@ do
 done
 
 # setup docker containers
+
+# build docker-compose.yml
+echo "creating docker-compose.yml"
+cat << EOF > test/docker-compose.yml 
+version: '3'
+
+services:
+EOF
+
+i=0
+for instance in $(jq '.[]' $CONF)
+do
+role=$(jq -rc ".[$i].role" $CONF)
+os=$(jq -rc ".[$i].os" $CONF)
+number=$(jq -rc ".[$i].number" $CONF)
+
+if [ -d test/$os/ ]; then
+
+
+cat << EOF >> test/docker-compose.yml 
+  $role:
+    build:
+      context: ./$os
+    command: /usr/sbin/sshd -D
+    deploy:
+      replicas: $number
+EOF
+fi
+i=$i+1
+done
+
 cd test/
-# build docker image
 echo "creating docker image"
 sudo docker-compose build
 # start scale of docker containers 
 echo "starting containers"
-sudo docker-compose up -d --scale demo=$CONTAINER_COUNT
-
-# get ip addresses
-ip_addresses=()
-for (( container=1; container<=$CONTAINER_COUNT; container++))
-do 
-	# receive ip address from container. hostname -i is not really reliable 
-	# but works for debian and ubuntu
-	ip=$(sudo docker exec test_demo_$container hostname -i)
-	ip_addresses+=("$ip")
-done
-echo ${ip_addresses[*]}
+# --compatibility flag used instead of --scale (https://github.com/docker/compose/issues/5586)
+# to make use of replicas 
+sudo docker-compose --compatibility up -d 
 
 cd ..
+
 if [ -e hosts ]; then
 	mv hosts hosts.bak
 fi
 
 # create hosts file for ansible
-cat << EOF > hosts
+touch hosts
 
-[web]
-EOF
+allroles=$(jq -r '.[].role' $CONF)
+# get names of running containers
+containers=$(sudo docker ps --format '{{.Names}}')
 
-# use paramiko because of ssh failure with sshpass 
-# use python3 because /usr/bin/python is not available 
-for ip in "${ip_addresses[@]}"
+echo $containers
+echo $allroles
+
+for role in $allroles
 do
+	echo $role 
+	# create hosts file for ansible
 cat << EOF >> hosts
-test_$ip ansible_host=$ip ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+
+[$role]
 EOF
-done 
+
+# find all container with role
+for container in $containers
+do
+	echo $container
+	if [[ $container = *$role* ]]; then
+		echo $container
+		ip=$(sudo docker exec $container hostname -i)
+cat << EOF >> hosts
+$container ansible_host=$ip ansible_user=root ansible_ssh_pass=password ansible_connection=paramiko ansible_python_interpreter=/usr/bin/python3
+EOF
+	fi
+done
+done
 
 # test playbooks 
 ansible-playbook -i hosts deploy.yml
@@ -68,9 +107,9 @@ else
 fi
 
 # cleanup 
-if [ -e hosts.bak ]; then
-	mv hosts.bak hosts
-fi
+#if [ -e hosts.bak ]; then
+#	mv hosts.bak hosts
+#fi
 cd test/
 sudo docker-compose down
 exit 0
